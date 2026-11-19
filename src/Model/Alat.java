@@ -23,39 +23,20 @@ public class Alat {
         return idAlat;
     }
 
-    public void setIdAlat(int idAlat) {
-        this.idAlat = idAlat;
-    }
-
     public String getNamaAlat() {
         return namaAlat;
-    }
-
-    public void setNamaAlat(String namaAlat) {
-        this.namaAlat = namaAlat;
     }
 
     public String getJenisAlat() {
         return jenisAlat;
     }
 
-    public void setJenisAlat(String jenisAlat) {
-        this.jenisAlat = jenisAlat;
-    }
-
     public double getHargaSewa() {
         return hargaSewa;
-    }
-
-    public void setHargaSewa(double hargaSewa) {
-        this.hargaSewa = hargaSewa;
     }
 
     public int getStok() {
         return stok;
     }
 
-    public void setStok(int stok) {
-        this.stok = stok;
-    }
 }
