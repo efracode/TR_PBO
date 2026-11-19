@@ -14,7 +14,7 @@ public class Koneksi {
     // Konfigurasi untuk mmebuka koneksi database
     public void config() {
         try {
-            String url = "jdbc:mysql://localhost/rental_outdoor";
+            String url = "jdbc:mysql://localhost/db_rental_alat";
             String user = "root";
             String pass = "";
 
