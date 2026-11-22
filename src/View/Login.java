@@ -65,11 +65,14 @@ public class Login extends javax.swing.JFrame {
                         if ("admin".equalsIgnoreCase(role)) {
                             new DashboardAdmin(userLogged).setVisible(true);
                             this.dispose();
+                        } else if ("user".equalsIgnoreCase(role) || "kasir".equalsIgnoreCase(role)) {
+                            new DashboardKasir(userLogged).setVisible(true);
+                            this.dispose();
                         } else {
                             JOptionPane.showMessageDialog(this,
-                                    "Login berhasil sebagai " + role + " (" + userLogged + ").\nHalaman untuk role ini belum tersedia.",
-                                    "Informasi",
-                                    JOptionPane.INFORMATION_MESSAGE);
+                                    "Role tidak dikenali: " + role,
+                                    "Login Gagal",
+                                    JOptionPane.WARNING_MESSAGE);
                         }
                     } else {
                         JOptionPane.showMessageDialog(this,
