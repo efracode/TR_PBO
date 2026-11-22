@@ -8,19 +8,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.table.DefaultTableModel;
 
-//catatan untuk yang buat view: ini mostly persis sama yang di asdos.
-//tapi, untuk Create sama Update deklarasi objeknya di view, bukan di sini
-//jadi parameternya lembar objek langsung.
-
 public class AlatController {
     public Statement stm;
     public ResultSet res;
     public String sql;
 
-    // Model tabel/bentuk tabel/tabel virtual sebelum di apply di view
     DefaultTableModel dtm = new DefaultTableModel();
 
-    // Konstruktor
     public AlatController() {
         Koneksi db = new Koneksi();
         db.config();
@@ -73,15 +67,16 @@ public class AlatController {
                     + "(id_alat, kode_alat, nama_alat, kategori, harga_sewa_per_hari, stok) "
                     + "VALUES ("
                     + alat.getIdAlat() + ", "
-                    + alat.getKodeAlat() + ", "
-                    + alat.getNamaAlat() + ", "
-                    + alat.getKategori() + ", "
+                    + "'" + alat.getKodeAlat().replace("'", "''") + "', "
+                    + "'" + alat.getNamaAlat().replace("'", "''") + "', "
+                    + "'" + alat.getKategori().replace("'", "''") + "', "
                     + alat.getHargaSewa() + ", "
                     + alat.getStok()
                     + ")";
                     this.stm.executeUpdate(sql);
                     return true;
         }catch (SQLException e){
+            System.out.println("Gagal create: " + e.getMessage());
             return false;
         }
     }
@@ -90,15 +85,16 @@ public class AlatController {
         try{
             this.sql = "UPDATE alat "
                     + "SET "
-                    + "kode_alat = '" + alat.getKodeAlat() + "', "
-                    + "nama_alat = '" + alat.getNamaAlat() + "', "
-                    + "kategori = '" + alat.getKategori() + "', "
+                    + "kode_alat = '" + alat.getKodeAlat().replace("'", "''") + "', "
+                    + "nama_alat = '" + alat.getNamaAlat().replace("'", "''") + "', "
+                    + "kategori = '" + alat.getKategori().replace("'", "''") + "', "
                     + "harga_sewa_per_hari = " + alat.getHargaSewa() + ", "
-                    + "stok = " + alat.getStok()
-                    + "WHERE id_alat = " + alat.getIdAlat() + "";
+                    + "stok = " + alat.getStok() + " "
+                    + "WHERE id_alat = " + alat.getIdAlat();
                     this.stm.executeUpdate(sql);
                     return true;
         }catch (SQLException e){
+            System.out.println("Gagal update: " + e.getMessage());
             return false;
         }
     }
@@ -108,10 +104,11 @@ public class AlatController {
         al.setIdAlat(a);
         
         try {
-            this.sql = "DELETE FROM alat WHERE id = " + al.getIdAlat() + "";
+            this.sql = "DELETE FROM alat WHERE id_alat = " + al.getIdAlat();
             this.stm.executeUpdate(sql);
             return true;
         } catch (SQLException e) {
+            System.out.println("Gagal delete: " + e.getMessage());
             return false;
         }
     }
