@@ -255,6 +255,11 @@ public class DashboardAdmin extends javax.swing.JFrame {
 
         lblCari.setText("Cari:");
 
+        txtCari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCariActionPerformed(evt);
+            }
+        });
         txtCari.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtCariKeyReleased(evt);
@@ -785,6 +790,10 @@ public class DashboardAdmin extends javax.swing.JFrame {
             transaksiController.readDetailTransaksi(detailModel, idPenyewaan);
         }
     }//GEN-LAST:event_tblRiwayatTransaksiMouseClicked
+
+    private void txtCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCariActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCariActionPerformed
 
     /**
      * @param args the command line arguments

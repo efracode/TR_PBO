@@ -3,11 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/D:/Tugas/kode/java/TR_PBO/src/Controller/PelangganController.java</file>
+            <file>file:/D:/Tugas/kode/java/TR_PBO/src/View/DashboardKasir.java</file>
             <file>file:/D:/Tugas/kode/java/TR_PBO/src/View/DashboardAdmin.java</file>
-            <file>file:/D:/Tugas/kode/java/TR_PBO/src/Model/Alat.java</file>
-            <file>file:/D:/Tugas/kode/java/TR_PBO/src/Database/Koneksi.java</file>
             <file>file:/D:/Tugas/kode/java/TR_PBO/src/Model/Pelanggan.java</file>
-            <file>file:/D:/Tugas/kode/java/TR_PBO/src/Controller/TransaksiController.java</file>
         </group>
     </open-files>
 </project-private>

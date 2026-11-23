@@ -4,8 +4,10 @@
  */
 package View;
 
+import Controller.PelangganController;
 import Controller.TransaksiController;
 import Model.Keranjang;
+import Model.Pelanggan;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -26,6 +29,9 @@ public class DashboardKasir extends javax.swing.JFrame {
     private static final double DENDA_PER_HARI = 10000;
     private static final double DENDA_HILANG_RUSAK = 100000;
     private final TransaksiController transaksiController;
+    private final PelangganController pelangganController;
+    private final DefaultTableModel tableModel;
+    private final TableRowSorter<DefaultTableModel> rowSorter;
     private final List<Keranjang> keranjangList = new ArrayList<>();
     private int selectedSewaId = -1;
     private String selectedRencanaKembali = "";
@@ -43,11 +49,20 @@ public class DashboardKasir extends javax.swing.JFrame {
         lblUser.setText("Kasir: " + namaUser);
 
         transaksiController = new TransaksiController();
-
+        pelangganController = new PelangganController();
+        
         tblPelanggan.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblKeranjang.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblSewaAktif.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblTransaksi.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
+        tableModel = pelangganController.createTable();
+        tblPelanggan.setModel(tableModel);
+        tblPelanggan.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tblPelanggan.setDefaultEditor(Object.class, null);
+        
+        rowSorter = new TableRowSorter<>(tableModel);
+        tblPelanggan.setRowSorter(rowSorter);
 
         JComboBox<String> cbKondisiEditor = new JComboBox<>(new String[]{"BAIK", "RUSAK", "BURUK", "HILANG"});
         tblDetailKembali.getColumnModel().getColumn(6).setCellEditor(new DefaultCellEditor(cbKondisiEditor));
@@ -57,11 +72,16 @@ public class DashboardKasir extends javax.swing.JFrame {
             }
         });
 
+        loadData();
         resetFormSewa();
         updatePembayaranMode();
         loadMasterData();
         loadSewaAktif();
         loadTransaksi();
+    }
+    
+    private void loadData() {
+        pelangganController.readPelanggan();
     }
 
     private void loadMasterData() {
@@ -189,6 +209,42 @@ public class DashboardKasir extends javax.swing.JFrame {
         keranjangList.clear();
         refreshKeranjangTable();
     }
+    
+    private Pelanggan buildPelangganFromForm() {
+        String idText = txtIdPelanggan.getText().trim();
+        String nama = txtNamaPelanggan.getText().trim();
+        String noHp = txtNoHpPelanggan.getText().trim();
+
+        if (idText.isEmpty() || noHp.isEmpty() || nama.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Semua field wajib diisi!",
+                    "Peringatan",
+                    JOptionPane.WARNING_MESSAGE);
+            return null;
+        }
+        
+        try {
+            int idPelanggan = Integer.parseInt(idText);
+            
+            return new Pelanggan(idPelanggan, nama, noHp);
+            
+        } catch (NumberFormatException e){
+            JOptionPane.showMessageDialog(this,
+                    "ID Alat, Harga Sewa, dan Stok harus berupa angka yang valid!",
+                    "Input Tidak Valid",
+                    JOptionPane.WARNING_MESSAGE);
+            return null;
+        }
+        
+    }
+    
+    private void resetForm() {
+        txtIdPelanggan.setText("");
+        txtNamaPelanggan.setText("");
+        txtNoHpPelanggan.setText("");
+    }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -1131,14 +1187,92 @@ public class DashboardKasir extends javax.swing.JFrame {
 
     private void btnTambahPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahPelangganActionPerformed
         // TODO: hubungkan ke PelangganController
+        Pelanggan pelanggan = buildPelangganFromForm();
+        if (pelanggan == null) {
+            return;
+        }
+
+        if (pelangganController.createPelanggan(pelanggan)) {
+            JOptionPane.showMessageDialog(this,
+                    "Data pelanggan berhasil ditambahkan!",
+                    "Sukses",
+                    JOptionPane.INFORMATION_MESSAGE);
+            loadData();
+            resetForm();
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Gagal menambahkan data pelanggan. Periksa ID pelanggan atau koneksi database.",
+                    "Gagal",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnTambahPelangganActionPerformed
 
     private void btnUbahPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUbahPelangganActionPerformed
         // TODO: hubungkan ke PelangganController
+        Pelanggan pelanggan = buildPelangganFromForm();
+        if (pelanggan == null) {
+            return;
+        }
+
+        if (pelangganController.updatePelanggan(pelanggan)) {
+            JOptionPane.showMessageDialog(this,
+                    "Data pelanggan berhasil diupdate!",
+                    "Sukses",
+                    JOptionPane.INFORMATION_MESSAGE);
+            loadData();
+            resetForm();
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Gagal mengupdate data pelanggan. Periksa ID pelanggan atau koneksi database.",
+                    "Gagal",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+        
     }//GEN-LAST:event_btnUbahPelangganActionPerformed
 
     private void btnHapusPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusPelangganActionPerformed
         // TODO: hubungkan ke PelangganController
+        String idText = txtIdPelanggan.getText().trim();
+        if (idText.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Pilih data pelanggan pada tabel atau isi ID Alat terlebih dahulu!",
+                    "Peringatan",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int idPelanggan;
+        try {
+            idPelanggan = Integer.parseInt(idText);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this,
+                    "ID pelanggan harus berupa angka!",
+                    "Input Tidak Valid",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Apakah Anda yakin ingin menghapus data pelanggan dengan ID " + idPelanggan + "?",
+                "Konfirmasi Hapus",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (pelangganController.deletePelanggan(idPelanggan)) {
+                JOptionPane.showMessageDialog(this,
+                        "Data pelanggan berhasil dihapus!",
+                        "Sukses",
+                        JOptionPane.INFORMATION_MESSAGE);
+                loadData();
+                resetForm();
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Gagal menghapus data pelanggan. Periksa ID pelanggan atau koneksi database.",
+                        "Gagal",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btnHapusPelangganActionPerformed
 
     private void btnResetPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetPelangganActionPerformed
@@ -1154,6 +1288,7 @@ public class DashboardKasir extends javax.swing.JFrame {
 
     private void btnRefreshPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshPelangganActionPerformed
         // TODO: hubungkan ke PelangganController
+        loadData();
     }//GEN-LAST:event_btnRefreshPelangganActionPerformed
 
     private void tblPelangganMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPelangganMouseClicked
