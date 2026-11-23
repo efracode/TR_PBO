@@ -89,17 +89,17 @@ public class PelangganController {
         }
         
         public boolean deletePelanggan(int a) {
-        Pelanggan pel = new Pelanggan();
-        pel.setIdPelanggan(a);
+            Pelanggan pel = new Pelanggan();
+            pel.setIdPelanggan(a);
 
-        try {
-            this.sql = "DELETE FROM pelanggan WHERE id_pelanggan = " + pel.getIdPelanggan();
-            this.stm.executeUpdate(sql);
-            return true;
-        } catch (SQLException e) {
-            System.out.println("Gagal delete: " + e.getMessage());
-            return false;
+            try {
+                this.sql = "DELETE FROM pelanggan WHERE id_pelanggan = " + pel.getIdPelanggan();
+                this.stm.executeUpdate(sql);
+                return true;
+            } catch (SQLException e) {
+                System.out.println("Gagal delete: " + e.getMessage());
+                return false;
+            }
         }
-    }
     }
 

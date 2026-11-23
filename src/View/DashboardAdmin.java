@@ -6,7 +6,9 @@ package View;
 
 import Controller.AlatController;
 import Controller.TransaksiController;
+import Controller.UserController;
 import Model.Alat;
+import Model.User;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
@@ -21,9 +23,12 @@ public class DashboardAdmin extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(DashboardAdmin.class.getName());
     private final AlatController alatController;
+    private final UserController userController;
     private final TransaksiController transaksiController;
     private final DefaultTableModel tableModel;
+    private final DefaultTableModel tableModelUser;
     private final TableRowSorter<DefaultTableModel> rowSorter;
+    private final TableRowSorter<DefaultTableModel> rowSorterUser;
 
     /**
      * Creates new form DashboardAdmin
@@ -39,24 +44,38 @@ public class DashboardAdmin extends javax.swing.JFrame {
 
         alatController = new AlatController();
         transaksiController = new TransaksiController();
+        userController = new UserController();
 
         tableModel = alatController.createTable();
         tblAlat.setModel(tableModel);
         tblAlat.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblAlat.setDefaultEditor(Object.class, null);
 
+        tableModelUser = userController.createTable();
+        tblUser.setModel(tableModelUser);
+        tblUser.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tblUser.setDefaultEditor(Object.class, null);
+        
         rowSorter = new TableRowSorter<>(tableModel);
         tblAlat.setRowSorter(rowSorter);
+        
+        rowSorterUser = new TableRowSorter<>(tableModelUser);
+        tblUser.setRowSorter(rowSorterUser);
 
         tblRiwayatTransaksi.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         loadData();
         loadRiwayatTransaksi();
+        loadUser();
     }
 
     private void loadData() {
         alatController.readAlat();
         lblTotalAlat.setText("Total Alat: " + tableModel.getRowCount());
+    }
+    
+    private void loadUser() {
+        userController.readUser();
     }
 
     private void loadRiwayatTransaksi() {
@@ -113,6 +132,40 @@ public class DashboardAdmin extends javax.swing.JFrame {
             return null;
         }
     }
+    
+    private User buildUserFromForm() {
+        String idText = txtIdUser.getText().trim();
+        String username = txtUsernameUser.getText().trim();
+        String password = txtPasswordUser.getText().trim();
+        Object roleObj = cbRoleUser.getEditor().getItem();
+        String role = roleObj == null ? "" : roleObj.toString().trim();
+        if (role.isEmpty() && cbKategori.getSelectedItem() != null) {
+            role = cbRoleUser.getSelectedItem().toString().trim();
+        }
+        
+        if (idText.isEmpty() || username.isEmpty() || password.isEmpty()
+                || role.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Semua field wajib diisi!",
+                    "Peringatan",
+                    JOptionPane.WARNING_MESSAGE);
+            return null;
+        }
+        
+        try {
+            int idUser = Integer.parseInt(idText);
+
+            return new User(idUser, username, password, role);
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this,
+                    "ID User harus berupa angka yang valid!",
+                    "Input Tidak Valid",
+                    JOptionPane.WARNING_MESSAGE);
+            return null;
+        }
+        
+    }
 
     private void resetForm() {
         txtIdAlat.setText("");
@@ -123,6 +176,15 @@ public class DashboardAdmin extends javax.swing.JFrame {
         txtStok.setText("");
         tblAlat.clearSelection();
         txtIdAlat.requestFocus();
+    }
+    
+    private void resetFormUser(){
+        txtIdUser.setText("");
+        txtUsernameUser.setText("");
+        txtPasswordUser.setText("");
+        cbRoleUser.setSelectedIndex(0);
+        tblUser.clearSelection();
+        txtIdUser.requestFocus();
     }
 
     /**
@@ -499,16 +561,41 @@ public class DashboardAdmin extends javax.swing.JFrame {
         cbRoleUser.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "admin", "user" }));
 
         btnTambahUser.setText("Tambah");
+        btnTambahUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTambahUserActionPerformed(evt);
+            }
+        });
 
         btnUbahUser.setText("Ubah");
+        btnUbahUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUbahUserActionPerformed(evt);
+            }
+        });
 
         btnHapusUser.setText("Hapus");
+        btnHapusUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHapusUserActionPerformed(evt);
+            }
+        });
 
         btnResetUser.setText("Reset");
+        btnResetUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResetUserActionPerformed(evt);
+            }
+        });
 
         lblCariUser.setText("Cari:");
 
         btnRefreshUser.setText("Refresh");
+        btnRefreshUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshUserActionPerformed(evt);
+            }
+        });
 
         tblUser.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -524,6 +611,11 @@ public class DashboardAdmin extends javax.swing.JFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        tblUser.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblUserMouseClicked(evt);
             }
         });
         jScrollPaneUser.setViewportView(tblUser);
@@ -794,6 +886,121 @@ public class DashboardAdmin extends javax.swing.JFrame {
     private void txtCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCariActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCariActionPerformed
+
+    private void btnTambahUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahUserActionPerformed
+        // TODO add your handling code here:
+        User user = buildUserFromForm();
+        if (user == null) {
+            return;
+        }
+
+        if (userController.createUser(user)) {
+            JOptionPane.showMessageDialog(this,
+                    "Data user berhasil ditambahkan!",
+                    "Sukses",
+                    JOptionPane.INFORMATION_MESSAGE);
+            loadUser();
+            resetFormUser();
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Gagal menambahkan data user. Periksa ID user atau koneksi database.",
+                    "Gagal",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnTambahUserActionPerformed
+
+    private void btnUbahUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUbahUserActionPerformed
+        // TODO add your handling code here:
+        User user = buildUserFromForm();
+        if (user == null) {
+            return;
+        }
+
+        if (userController.updateUser(user)) {
+            JOptionPane.showMessageDialog(this,
+                    "Data user berhasil diupdate!",
+                    "Sukses",
+                    JOptionPane.INFORMATION_MESSAGE);
+            loadUser();
+            resetFormUser();
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Gagal mengupdate data user. Periksa ID user atau koneksi database.",
+                    "Gagal",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnUbahUserActionPerformed
+
+    private void btnHapusUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusUserActionPerformed
+        // TODO add your handling code here:
+        String idText = txtIdUser.getText().trim();
+        if (idText.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Pilih data user pada tabel atau isi ID user terlebih dahulu!",
+                    "Peringatan",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int idUser;
+        try {
+            idUser = Integer.parseInt(idText);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this,
+                    "ID user harus berupa angka!",
+                    "Input Tidak Valid",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Apakah Anda yakin ingin menghapus data user dengan ID " + idUser + "?",
+                "Konfirmasi Hapus",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (userController.deleteUser(idUser)) {
+                JOptionPane.showMessageDialog(this,
+                        "Data user berhasil dihapus!",
+                        "Sukses",
+                        JOptionPane.INFORMATION_MESSAGE);
+                loadUser();
+                resetFormUser();
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Gagal menghapus data user. Periksa ID user atau koneksi database.",
+                        "Gagal",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnHapusUserActionPerformed
+
+    private void btnResetUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetUserActionPerformed
+        // TODO add your handling code here:
+        txtIdUser.setText("");
+        txtUsernameUser.setText("");
+        txtPasswordUser.setText("");
+        cbRoleUser.setSelectedIndex(0);
+        tblUser.clearSelection();
+        txtIdUser.requestFocus();
+    }//GEN-LAST:event_btnResetUserActionPerformed
+
+    private void btnRefreshUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshUserActionPerformed
+        // TODO add your handling code here:
+        loadUser();
+    }//GEN-LAST:event_btnRefreshUserActionPerformed
+
+    private void tblUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblUserMouseClicked
+        // TODO add your handling code here:
+        int row = tblUser.getSelectedRow();
+        if (row >= 0) {
+            txtIdUser.setText(tblUser.getValueAt(row, 0).toString());
+            txtUsernameUser.setText(tblUser.getValueAt(row, 1).toString());
+            txtPasswordUser.setText(tblUser.getValueAt(row, 2).toString());
+            cbRoleUser.setSelectedItem(tblUser.getValueAt(row, 3).toString());
+        }
+    }//GEN-LAST:event_tblUserMouseClicked
 
     /**
      * @param args the command line arguments

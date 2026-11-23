@@ -230,7 +230,7 @@ public class DashboardKasir extends javax.swing.JFrame {
             
         } catch (NumberFormatException e){
             JOptionPane.showMessageDialog(this,
-                    "ID Alat, Harga Sewa, dan Stok harus berupa angka yang valid!",
+                    "ID Pelanggan harus berupa angka yang valid!",
                     "Input Tidak Valid",
                     JOptionPane.WARNING_MESSAGE);
             return null;
@@ -243,8 +243,6 @@ public class DashboardKasir extends javax.swing.JFrame {
         txtNamaPelanggan.setText("");
         txtNoHpPelanggan.setText("");
     }
-    
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -1235,7 +1233,7 @@ public class DashboardKasir extends javax.swing.JFrame {
         String idText = txtIdPelanggan.getText().trim();
         if (idText.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                    "Pilih data pelanggan pada tabel atau isi ID Alat terlebih dahulu!",
+                    "Pilih data pelanggan pada tabel atau isi ID pelanggan terlebih dahulu!",
                     "Peringatan",
                     JOptionPane.WARNING_MESSAGE);
             return;
