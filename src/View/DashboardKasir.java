@@ -23,9 +23,12 @@ import javax.swing.table.DefaultTableModel;
 public class DashboardKasir extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(DashboardKasir.class.getName());
+    private static final double DENDA_PER_HARI = 10000;
+    private static final double DENDA_HILANG_RUSAK = 100000;
     private final TransaksiController transaksiController;
     private final List<Keranjang> keranjangList = new ArrayList<>();
     private int selectedSewaId = -1;
+    private String selectedRencanaKembali = "";
 
     /**
      * Creates new form DashboardKasir
@@ -41,14 +44,21 @@ public class DashboardKasir extends javax.swing.JFrame {
 
         transaksiController = new TransaksiController();
 
+        tblPelanggan.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblKeranjang.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblSewaAktif.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblTransaksi.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         JComboBox<String> cbKondisiEditor = new JComboBox<>(new String[]{"BAIK", "RUSAK", "BURUK", "HILANG"});
         tblDetailKembali.getColumnModel().getColumn(6).setCellEditor(new DefaultCellEditor(cbKondisiEditor));
+        tblDetailKembali.getModel().addTableModelListener(e -> {
+            if (e.getType() == javax.swing.event.TableModelEvent.UPDATE) {
+                hitungDendaOtomatis();
+            }
+        });
 
         resetFormSewa();
+        updatePembayaranMode();
         loadMasterData();
         loadSewaAktif();
         loadTransaksi();
@@ -61,11 +71,44 @@ public class DashboardKasir extends javax.swing.JFrame {
 
     private void loadSewaAktif() {
         selectedSewaId = -1;
+        selectedRencanaKembali = "";
         DefaultTableModel dtm = (DefaultTableModel) tblSewaAktif.getModel();
         transaksiController.readSewaAktif(dtm);
         ((DefaultTableModel) tblDetailKembali.getModel()).setRowCount(0);
         txtTglKembali.setText(LocalDate.now().toString());
         txtDenda.setText("0");
+    }
+
+    private void hitungDendaOtomatis() {
+        if (selectedRencanaKembali == null || selectedRencanaKembali.isEmpty()) {
+            txtDenda.setText("0");
+            return;
+        }
+        try {
+            LocalDate tglRencana = LocalDate.parse(selectedRencanaKembali);
+            LocalDate tglKembali = LocalDate.parse(txtTglKembali.getText().trim());
+            long terlambat = ChronoUnit.DAYS.between(tglRencana, tglKembali);
+
+            int totalItem = 0;
+            int totalHilangRusak = 0;
+            DefaultTableModel detailModel = (DefaultTableModel) tblDetailKembali.getModel();
+            for (int i = 0; i < detailModel.getRowCount(); i++) {
+                int jmlSewa = Integer.parseInt(detailModel.getValueAt(i, 4).toString());
+                int jmlKembali = Integer.parseInt(detailModel.getValueAt(i, 5).toString());
+                String kondisi = detailModel.getValueAt(i, 6) == null ? "BAIK" : detailModel.getValueAt(i, 6).toString();
+
+                totalItem += jmlSewa;
+                if ("HILANG".equalsIgnoreCase(kondisi) || "RUSAK".equalsIgnoreCase(kondisi)) {
+                    totalHilangRusak += (jmlKembali > 0 ? jmlKembali : jmlSewa);
+                }
+            }
+
+            double dendaTelat = terlambat > 0 ? totalItem * terlambat * DENDA_PER_HARI : 0;
+            double dendaKondisi = totalHilangRusak * DENDA_HILANG_RUSAK;
+            txtDenda.setText(String.valueOf(dendaTelat + dendaKondisi));
+        } catch (Exception e) {
+            txtDenda.setText("0");
+        }
     }
 
     private void loadTransaksi() {
@@ -100,6 +143,16 @@ public class DashboardKasir extends javax.swing.JFrame {
         }
     }
 
+    private void updatePembayaranMode() {
+        String metode = cbMetode.getSelectedItem() == null ? "Cash" : cbMetode.getSelectedItem().toString();
+        boolean isCash = "Cash".equalsIgnoreCase(metode);
+        txtBayar.setEditable(isCash);
+        if (!isCash) {
+            txtBayar.setText(txtTotalBiaya.getText());
+            txtKembalian.setText("0");
+        }
+    }
+
     private void hitungTotalDanKembalian() {
         double totalPerHari = 0;
         for (Keranjang item : keranjangList) {
@@ -107,6 +160,13 @@ public class DashboardKasir extends javax.swing.JFrame {
         }
         double totalBiaya = totalPerHari * hitungLamaHari();
         txtTotalBiaya.setText(String.valueOf(totalBiaya));
+
+        String metode = cbMetode.getSelectedItem() == null ? "Cash" : cbMetode.getSelectedItem().toString();
+        if (!"Cash".equalsIgnoreCase(metode)) {
+            txtBayar.setText(String.valueOf(totalBiaya));
+            txtKembalian.setText("0");
+            return;
+        }
 
         try {
             double bayar = Double.parseDouble(txtBayar.getText().trim());
@@ -121,9 +181,11 @@ public class DashboardKasir extends javax.swing.JFrame {
         txtTglSewa.setText(today.toString());
         txtTglRencanaKembali.setText(today.plusDays(1).toString());
         txtJumlah.setText("1");
-        txtBayar.setText("");
         txtTotalBiaya.setText("0");
+        txtBayar.setText("");
         txtKembalian.setText("0");
+        cbMetode.setSelectedIndex(0);
+        txtBayar.setEditable(true);
         keranjangList.clear();
         refreshKeranjangTable();
     }
@@ -189,6 +251,23 @@ public class DashboardKasir extends javax.swing.JFrame {
         lblDetailTransaksiTitle = new javax.swing.JLabel();
         jScrollPaneDetailTransaksi = new javax.swing.JScrollPane();
         tblDetailTransaksi = new javax.swing.JTable();
+        panelPelanggan = new javax.swing.JPanel();
+        lblIdPelanggan = new javax.swing.JLabel();
+        txtIdPelanggan = new javax.swing.JTextField();
+        lblNamaPelanggan = new javax.swing.JLabel();
+        txtNamaPelanggan = new javax.swing.JTextField();
+        lblNoHpPelanggan = new javax.swing.JLabel();
+        txtNoHpPelanggan = new javax.swing.JTextField();
+        btnTambahPelanggan = new javax.swing.JButton();
+        btnUbahPelanggan = new javax.swing.JButton();
+        btnHapusPelanggan = new javax.swing.JButton();
+        btnResetPelanggan = new javax.swing.JButton();
+        lblCariPelanggan = new javax.swing.JLabel();
+        txtCariPelanggan = new javax.swing.JTextField();
+        btnRefreshPelanggan = new javax.swing.JButton();
+        jScrollPanePelanggan = new javax.swing.JScrollPane();
+        tblPelanggan = new javax.swing.JTable();
+        lblTotalPelanggan = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Dashboard Kasir");
@@ -269,6 +348,11 @@ public class DashboardKasir extends javax.swing.JFrame {
         lblMetode.setText("Metode");
 
         cbMetode.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cash", "QRIS", "Transfer" }));
+        cbMetode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbMetodeActionPerformed(evt);
+            }
+        });
 
         lblBayar.setText("Jumlah Bayar");
 
@@ -305,22 +389,26 @@ public class DashboardKasir extends javax.swing.JFrame {
                 .addGap(12, 12, 12)
                 .addGroup(panelPeminjamanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(lblPelanggan)
-                    .addComponent(cbPelanggan, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cbPelanggan, 0, 240, Short.MAX_VALUE)
                     .addComponent(lblTglSewa)
                     .addComponent(txtTglSewa)
                     .addComponent(lblTglRencana)
-                    .addComponent(txtTglRencanaKembali)
-                    .addComponent(lblPilihAlat)
-                    .addComponent(cbAlat, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblJumlah)
-                    .addComponent(txtJumlah)
-                    .addGroup(panelPeminjamanLayout.createSequentialGroup()
-                        .addComponent(btnTambahItem, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnHapusItem, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)))
+                    .addComponent(txtTglRencanaKembali))
                 .addGap(24, 24, 24)
                 .addGroup(panelPeminjamanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPaneKeranjang, javax.swing.GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
+                    .addGroup(panelPeminjamanLayout.createSequentialGroup()
+                        .addGroup(panelPeminjamanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblPilihAlat)
+                            .addComponent(cbAlat, 0, 290, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(panelPeminjamanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblJumlah)
+                            .addComponent(txtJumlah, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnTambahItem, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnHapusItem, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPaneKeranjang, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
                     .addGroup(panelPeminjamanLayout.createSequentialGroup()
                         .addGroup(panelPeminjamanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblTotalBiaya)
@@ -362,21 +450,19 @@ public class DashboardKasir extends javax.swing.JFrame {
                         .addComponent(lblTglRencana)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtTglRencanaKembali, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblPilihAlat)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbAlat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblJumlah)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtJumlah, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(panelPeminjamanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnTambahItem)
-                            .addComponent(btnHapusItem))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(panelPeminjamanLayout.createSequentialGroup()
-                        .addComponent(jScrollPaneKeranjang, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                        .addGroup(panelPeminjamanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblPilihAlat)
+                            .addComponent(lblJumlah))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panelPeminjamanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cbAlat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtJumlah, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnTambahItem)
+                            .addComponent(btnHapusItem))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPaneKeranjang, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(panelPeminjamanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblTotalBiaya)
@@ -458,6 +544,12 @@ public class DashboardKasir extends javax.swing.JFrame {
         jScrollPaneKembali.setViewportView(tblDetailKembali);
 
         lblTglKembali.setText("Tanggal Kembali:");
+
+        txtTglKembali.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtTglKembaliKeyReleased(evt);
+            }
+        });
 
         lblDenda.setText("Total Denda:");
 
@@ -619,6 +711,155 @@ public class DashboardKasir extends javax.swing.JFrame {
         );
 
         tabKasir.addTab("Lihat Transaksi", panelTransaksi);
+
+        lblIdPelanggan.setText("ID Pelanggan");
+
+        lblNamaPelanggan.setText("Nama");
+
+        lblNoHpPelanggan.setText("No HP");
+
+        btnTambahPelanggan.setText("Tambah");
+        btnTambahPelanggan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTambahPelangganActionPerformed(evt);
+            }
+        });
+
+        btnUbahPelanggan.setText("Ubah");
+        btnUbahPelanggan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUbahPelangganActionPerformed(evt);
+            }
+        });
+
+        btnHapusPelanggan.setText("Hapus");
+        btnHapusPelanggan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHapusPelangganActionPerformed(evt);
+            }
+        });
+
+        btnResetPelanggan.setText("Reset");
+        btnResetPelanggan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResetPelangganActionPerformed(evt);
+            }
+        });
+
+        lblCariPelanggan.setText("Cari:");
+
+        txtCariPelanggan.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtCariPelangganKeyReleased(evt);
+            }
+        });
+
+        btnRefreshPelanggan.setText("Refresh");
+        btnRefreshPelanggan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshPelangganActionPerformed(evt);
+            }
+        });
+
+        tblPelanggan.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "Nama", "No HP"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblPelanggan.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblPelangganMouseClicked(evt);
+            }
+        });
+        jScrollPanePelanggan.setViewportView(tblPelanggan);
+
+        lblTotalPelanggan.setText("Total Pelanggan: 0");
+
+        javax.swing.GroupLayout panelPelangganLayout = new javax.swing.GroupLayout(panelPelanggan);
+        panelPelanggan.setLayout(panelPelangganLayout);
+        panelPelangganLayout.setHorizontalGroup(
+            panelPelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelPelangganLayout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addGroup(panelPelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lblIdPelanggan)
+                    .addComponent(txtIdPelanggan)
+                    .addComponent(lblNamaPelanggan)
+                    .addComponent(txtNamaPelanggan)
+                    .addComponent(lblNoHpPelanggan)
+                    .addComponent(txtNoHpPelanggan)
+                    .addGroup(panelPelangganLayout.createSequentialGroup()
+                        .addGroup(panelPelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnTambahPelanggan, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                            .addComponent(btnHapusPelanggan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(panelPelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnUbahPelanggan, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                            .addComponent(btnResetPelanggan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addGap(24, 24, 24)
+                .addGroup(panelPelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelPelangganLayout.createSequentialGroup()
+                        .addComponent(lblCariPelanggan)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtCariPelanggan, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnRefreshPelanggan))
+                    .addComponent(jScrollPanePelanggan, javax.swing.GroupLayout.DEFAULT_SIZE, 598, Short.MAX_VALUE)
+                    .addGroup(panelPelangganLayout.createSequentialGroup()
+                        .addComponent(lblTotalPelanggan)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(12, 12, 12))
+        );
+        panelPelangganLayout.setVerticalGroup(
+            panelPelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelPelangganLayout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addGroup(panelPelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelPelangganLayout.createSequentialGroup()
+                        .addComponent(lblIdPelanggan)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtIdPelanggan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblNamaPelanggan)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtNamaPelanggan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblNoHpPelanggan)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtNoHpPelanggan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(panelPelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnTambahPelanggan)
+                            .addComponent(btnUbahPelanggan))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(panelPelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnHapusPelanggan)
+                            .addComponent(btnResetPelanggan))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(panelPelangganLayout.createSequentialGroup()
+                        .addGroup(panelPelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblCariPelanggan)
+                            .addComponent(txtCariPelanggan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnRefreshPelanggan))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPanePelanggan, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblTotalPelanggan)))
+                .addGap(12, 12, 12))
+        );
+
+        tabKasir.addTab("Data Pelanggan", panelPelanggan);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -790,6 +1031,11 @@ public class DashboardKasir extends javax.swing.JFrame {
         hitungTotalDanKembalian();
     }//GEN-LAST:event_txtTglRencanaKembaliKeyReleased
 
+    private void cbMetodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbMetodeActionPerformed
+        updatePembayaranMode();
+        hitungTotalDanKembalian();
+    }//GEN-LAST:event_cbMetodeActionPerformed
+
     private void btnRefreshAktifActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshAktifActionPerformed
         loadSewaAktif();
     }//GEN-LAST:event_btnRefreshAktifActionPerformed
@@ -798,10 +1044,16 @@ public class DashboardKasir extends javax.swing.JFrame {
         int row = tblSewaAktif.getSelectedRow();
         if (row >= 0) {
             selectedSewaId = Integer.parseInt(tblSewaAktif.getValueAt(row, 0).toString());
+            selectedRencanaKembali = tblSewaAktif.getValueAt(row, 3).toString();
             DefaultTableModel detailModel = (DefaultTableModel) tblDetailKembali.getModel();
             transaksiController.readDetailUntukKembali(detailModel, selectedSewaId);
+            hitungDendaOtomatis();
         }
     }//GEN-LAST:event_tblSewaAktifMouseClicked
+
+    private void txtTglKembaliKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTglKembaliKeyReleased
+        hitungDendaOtomatis();
+    }//GEN-LAST:event_txtTglKembaliKeyReleased
 
     private void btnProsesKembaliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProsesKembaliActionPerformed
         if (selectedSewaId <= 0 || tblDetailKembali.getRowCount() == 0) {
@@ -877,6 +1129,42 @@ public class DashboardKasir extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tblTransaksiMouseClicked
 
+    private void btnTambahPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahPelangganActionPerformed
+        // TODO: hubungkan ke PelangganController
+    }//GEN-LAST:event_btnTambahPelangganActionPerformed
+
+    private void btnUbahPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUbahPelangganActionPerformed
+        // TODO: hubungkan ke PelangganController
+    }//GEN-LAST:event_btnUbahPelangganActionPerformed
+
+    private void btnHapusPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusPelangganActionPerformed
+        // TODO: hubungkan ke PelangganController
+    }//GEN-LAST:event_btnHapusPelangganActionPerformed
+
+    private void btnResetPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetPelangganActionPerformed
+        txtIdPelanggan.setText("");
+        txtNamaPelanggan.setText("");
+        txtNoHpPelanggan.setText("");
+        tblPelanggan.clearSelection();
+    }//GEN-LAST:event_btnResetPelangganActionPerformed
+
+    private void txtCariPelangganKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCariPelangganKeyReleased
+        // TODO: hubungkan ke PelangganController
+    }//GEN-LAST:event_txtCariPelangganKeyReleased
+
+    private void btnRefreshPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshPelangganActionPerformed
+        // TODO: hubungkan ke PelangganController
+    }//GEN-LAST:event_btnRefreshPelangganActionPerformed
+
+    private void tblPelangganMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPelangganMouseClicked
+        int row = tblPelanggan.getSelectedRow();
+        if (row >= 0) {
+            txtIdPelanggan.setText(tblPelanggan.getValueAt(row, 0).toString());
+            txtNamaPelanggan.setText(tblPelanggan.getValueAt(row, 1).toString());
+            txtNoHpPelanggan.setText(tblPelanggan.getValueAt(row, 2).toString());
+        }
+    }//GEN-LAST:event_tblPelangganMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -904,13 +1192,18 @@ public class DashboardKasir extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnHapusItem;
+    private javax.swing.JButton btnHapusPelanggan;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnProsesKembali;
     private javax.swing.JButton btnRefreshAktif;
+    private javax.swing.JButton btnRefreshPelanggan;
     private javax.swing.JButton btnRefreshTransaksi;
+    private javax.swing.JButton btnResetPelanggan;
     private javax.swing.JButton btnResetSewa;
     private javax.swing.JButton btnSimpanSewa;
     private javax.swing.JButton btnTambahItem;
+    private javax.swing.JButton btnTambahPelanggan;
+    private javax.swing.JButton btnUbahPelanggan;
     private javax.swing.JComboBox<String> cbAlat;
     private javax.swing.JComboBox<String> cbMetode;
     private javax.swing.JComboBox<String> cbPelanggan;
@@ -918,17 +1211,22 @@ public class DashboardKasir extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPaneDetailTransaksi;
     private javax.swing.JScrollPane jScrollPaneKembali;
     private javax.swing.JScrollPane jScrollPaneKeranjang;
+    private javax.swing.JScrollPane jScrollPanePelanggan;
     private javax.swing.JScrollPane jScrollPaneTransaksi;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblAktifTitle;
     private javax.swing.JLabel lblBayar;
+    private javax.swing.JLabel lblCariPelanggan;
     private javax.swing.JLabel lblCariTransaksi;
     private javax.swing.JLabel lblDenda;
     private javax.swing.JLabel lblDetailKembaliTitle;
     private javax.swing.JLabel lblDetailTransaksiTitle;
+    private javax.swing.JLabel lblIdPelanggan;
     private javax.swing.JLabel lblJumlah;
     private javax.swing.JLabel lblKembalian;
     private javax.swing.JLabel lblMetode;
+    private javax.swing.JLabel lblNamaPelanggan;
+    private javax.swing.JLabel lblNoHpPelanggan;
     private javax.swing.JLabel lblPelanggan;
     private javax.swing.JLabel lblPilihAlat;
     private javax.swing.JLabel lblTglKembali;
@@ -936,7 +1234,9 @@ public class DashboardKasir extends javax.swing.JFrame {
     private javax.swing.JLabel lblTglSewa;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblTotalBiaya;
+    private javax.swing.JLabel lblTotalPelanggan;
     private javax.swing.JLabel lblUser;
+    private javax.swing.JPanel panelPelanggan;
     private javax.swing.JPanel panelPeminjaman;
     private javax.swing.JPanel panelPengembalian;
     private javax.swing.JPanel panelTransaksi;
@@ -944,13 +1244,18 @@ public class DashboardKasir extends javax.swing.JFrame {
     private javax.swing.JTable tblDetailKembali;
     private javax.swing.JTable tblDetailTransaksi;
     private javax.swing.JTable tblKeranjang;
+    private javax.swing.JTable tblPelanggan;
     private javax.swing.JTable tblSewaAktif;
     private javax.swing.JTable tblTransaksi;
     private javax.swing.JTextField txtBayar;
+    private javax.swing.JTextField txtCariPelanggan;
     private javax.swing.JTextField txtCariTransaksi;
     private javax.swing.JTextField txtDenda;
+    private javax.swing.JTextField txtIdPelanggan;
     private javax.swing.JTextField txtJumlah;
     private javax.swing.JTextField txtKembalian;
+    private javax.swing.JTextField txtNamaPelanggan;
+    private javax.swing.JTextField txtNoHpPelanggan;
     private javax.swing.JTextField txtTglKembali;
     private javax.swing.JTextField txtTglRencanaKembali;
     private javax.swing.JTextField txtTglSewa;

@@ -309,7 +309,9 @@ public class TransaksiController {
                     pstKembali.setString(4, catatan);
                     pstKembali.executeUpdate();
 
-                    if (!"HILANG".equalsIgnoreCase(kondisi) && jmlKembali > 0) {
+                    if (!"HILANG".equalsIgnoreCase(kondisi)
+                            && !"RUSAK".equalsIgnoreCase(kondisi)
+                            && jmlKembali > 0) {
                         pstStok.setInt(1, jmlKembali);
                         pstStok.setInt(2, idAlat);
                         pstStok.executeUpdate();

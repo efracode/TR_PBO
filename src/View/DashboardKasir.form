@@ -103,24 +103,30 @@
                       <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="lblPelanggan" min="-2" max="-2" attributes="0"/>
-                          <Component id="cbPelanggan" alignment="0" max="32767" attributes="0"/>
+                          <Component id="cbPelanggan" alignment="0" pref="240" max="32767" attributes="0"/>
                           <Component id="lblTglSewa" min="-2" max="-2" attributes="0"/>
                           <Component id="txtTglSewa" alignment="0" max="32767" attributes="0"/>
                           <Component id="lblTglRencana" min="-2" max="-2" attributes="0"/>
                           <Component id="txtTglRencanaKembali" alignment="0" max="32767" attributes="0"/>
-                          <Component id="lblPilihAlat" min="-2" max="-2" attributes="0"/>
-                          <Component id="cbAlat" alignment="0" max="32767" attributes="0"/>
-                          <Component id="lblJumlah" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtJumlah" alignment="0" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="btnTambahItem" min="-2" pref="135" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="btnHapusItem" pref="113" max="32767" attributes="0"/>
-                          </Group>
                       </Group>
                       <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPaneKeranjang" pref="580" max="32767" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="lblPilihAlat" min="-2" max="-2" attributes="0"/>
+                                  <Component id="cbAlat" pref="290" max="32767" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="lblJumlah" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtJumlah" min="-2" pref="70" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="btnTambahItem" min="-2" pref="110" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="btnHapusItem" min="-2" pref="100" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="jScrollPaneKeranjang" pref="600" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="lblTotalBiaya" min="-2" max="-2" attributes="0"/>
@@ -171,23 +177,22 @@
                               <Component id="lblTglRencana" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="txtTglRencanaKembali" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="lblPilihAlat" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="cbAlat" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="lblJumlah" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="txtJumlah" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="btnTambahItem" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="btnHapusItem" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
-                              <Component id="jScrollPaneKeranjang" pref="320" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="lblPilihAlat" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblJumlah" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="cbAlat" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtJumlah" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnTambahItem" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnHapusItem" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="jScrollPaneKeranjang" pref="265" max="32767" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="lblTotalBiaya" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -330,6 +335,9 @@
                   </StringArray>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbMetodeActionPerformed"/>
+              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
@@ -518,6 +526,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtTglKembali">
+              <Events>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtTglKembaliKeyReleased"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lblDenda">
               <Properties>
@@ -671,6 +682,206 @@
                 </Component>
               </SubComponents>
             </Container>
+          </SubComponents>
+        </Container>
+        <Container class="javax.swing.JPanel" name="panelPelanggan">
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+              <JTabbedPaneConstraints tabName="Data Pelanggan">
+                <Property name="tabTitle" type="java.lang.String" value="Data Pelanggan"/>
+              </JTabbedPaneConstraints>
+            </Constraint>
+          </Constraints>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="lblIdPelanggan" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtIdPelanggan" alignment="0" max="32767" attributes="0"/>
+                          <Component id="lblNamaPelanggan" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtNamaPelanggan" alignment="0" max="32767" attributes="0"/>
+                          <Component id="lblNoHpPelanggan" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtNoHpPelanggan" alignment="0" max="32767" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="btnTambahPelanggan" pref="115" max="32767" attributes="0"/>
+                                  <Component id="btnHapusPelanggan" max="32767" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="btnUbahPelanggan" pref="115" max="32767" attributes="0"/>
+                                  <Component id="btnResetPelanggan" max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
+                      </Group>
+                      <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="lblCariPelanggan" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="txtCariPelanggan" min="-2" pref="200" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="btnRefreshPelanggan" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="jScrollPanePelanggan" pref="598" max="32767" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Component id="lblTotalPelanggan" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="lblIdPelanggan" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="txtIdPelanggan" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="lblNamaPelanggan" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="txtNamaPelanggan" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="lblNoHpPelanggan" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="txtNoHpPelanggan" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="btnTambahPelanggan" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnUbahPelanggan" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="btnHapusPelanggan" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnResetPelanggan" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="lblCariPelanggan" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtCariPelanggan" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnRefreshPelanggan" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="jScrollPanePelanggan" pref="380" max="32767" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="lblTotalPelanggan" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JLabel" name="lblIdPelanggan">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="ID Pelanggan"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="txtIdPelanggan">
+            </Component>
+            <Component class="javax.swing.JLabel" name="lblNamaPelanggan">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Nama"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="txtNamaPelanggan">
+            </Component>
+            <Component class="javax.swing.JLabel" name="lblNoHpPelanggan">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="No HP"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="txtNoHpPelanggan">
+            </Component>
+            <Component class="javax.swing.JButton" name="btnTambahPelanggan">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Tambah"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTambahPelangganActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnUbahPelanggan">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Ubah"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnUbahPelangganActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnHapusPelanggan">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Hapus"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnHapusPelangganActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnResetPelanggan">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Reset"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnResetPelangganActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lblCariPelanggan">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Cari:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="txtCariPelanggan">
+              <Events>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtCariPelangganKeyReleased"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnRefreshPelanggan">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Refresh"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRefreshPelangganActionPerformed"/>
+              </Events>
+            </Component>
+            <Container class="javax.swing.JScrollPane" name="jScrollPanePelanggan">
+              <AuxValues>
+                <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+              </AuxValues>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+              <SubComponents>
+                <Component class="javax.swing.JTable" name="tblPelanggan">
+                  <Properties>
+                    <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                      <Table columnCount="3" rowCount="0">
+                        <Column editable="false" title="ID" type="java.lang.Object"/>
+                        <Column editable="false" title="Nama" type="java.lang.Object"/>
+                        <Column editable="false" title="No HP" type="java.lang.Object"/>
+                      </Table>
+                    </Property>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tblPelangganMouseClicked"/>
+                  </Events>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Component class="javax.swing.JLabel" name="lblTotalPelanggan">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Total Pelanggan: 0"/>
+              </Properties>
+            </Component>
           </SubComponents>
         </Container>
       </SubComponents>

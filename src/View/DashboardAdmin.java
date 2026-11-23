@@ -104,7 +104,7 @@ public class DashboardAdmin extends javax.swing.JFrame {
                 return null;
             }
 
-            return new Alat(idAlat, nama, kode, kategori, hargaSewa, stok);
+            return new Alat(idAlat, kode, nama, kategori, hargaSewa, stok);
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this,
                     "ID Alat, Harga Sewa, dan Stok harus berupa angka yang valid!",
