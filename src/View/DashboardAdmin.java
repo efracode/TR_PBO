@@ -173,6 +173,25 @@ public class DashboardAdmin extends javax.swing.JFrame {
         lblDetailTitle = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblDetailTransaksi = new javax.swing.JTable();
+        panelUser = new javax.swing.JPanel();
+        lblIdUser = new javax.swing.JLabel();
+        txtIdUser = new javax.swing.JTextField();
+        lblUsernameUser = new javax.swing.JLabel();
+        txtUsernameUser = new javax.swing.JTextField();
+        lblPasswordUser = new javax.swing.JLabel();
+        txtPasswordUser = new javax.swing.JPasswordField();
+        lblRoleUser = new javax.swing.JLabel();
+        cbRoleUser = new javax.swing.JComboBox<>();
+        btnTambahUser = new javax.swing.JButton();
+        btnUbahUser = new javax.swing.JButton();
+        btnHapusUser = new javax.swing.JButton();
+        btnResetUser = new javax.swing.JButton();
+        lblCariUser = new javax.swing.JLabel();
+        txtCariUser = new javax.swing.JTextField();
+        btnRefreshUser = new javax.swing.JButton();
+        jScrollPaneUser = new javax.swing.JScrollPane();
+        tblUser = new javax.swing.JTable();
+        lblTotalUser = new javax.swing.JLabel();
 
         jScrollPane4.setViewportView(jEditorPane1);
 
@@ -464,6 +483,129 @@ public class DashboardAdmin extends javax.swing.JFrame {
 
         tabAdmin.addTab("Riwayat Transaksi", panelRiwayat);
 
+        lblIdUser.setText("ID User");
+
+        lblUsernameUser.setText("Username");
+
+        lblPasswordUser.setText("Password");
+
+        lblRoleUser.setText("Role");
+
+        cbRoleUser.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "admin", "user" }));
+
+        btnTambahUser.setText("Tambah");
+
+        btnUbahUser.setText("Ubah");
+
+        btnHapusUser.setText("Hapus");
+
+        btnResetUser.setText("Reset");
+
+        lblCariUser.setText("Cari:");
+
+        btnRefreshUser.setText("Refresh");
+
+        tblUser.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "Username", "Password", "Role"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPaneUser.setViewportView(tblUser);
+
+        lblTotalUser.setText("Total User: 0");
+
+        javax.swing.GroupLayout panelUserLayout = new javax.swing.GroupLayout(panelUser);
+        panelUser.setLayout(panelUserLayout);
+        panelUserLayout.setHorizontalGroup(
+            panelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelUserLayout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addGroup(panelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lblIdUser)
+                    .addComponent(txtIdUser)
+                    .addComponent(lblUsernameUser)
+                    .addComponent(txtUsernameUser)
+                    .addComponent(lblPasswordUser)
+                    .addComponent(txtPasswordUser)
+                    .addComponent(lblRoleUser)
+                    .addComponent(cbRoleUser, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(panelUserLayout.createSequentialGroup()
+                        .addGroup(panelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnTambahUser, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                            .addComponent(btnHapusUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(panelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnUbahUser, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                            .addComponent(btnResetUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addGap(24, 24, 24)
+                .addGroup(panelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelUserLayout.createSequentialGroup()
+                        .addComponent(lblCariUser)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtCariUser, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnRefreshUser))
+                    .addComponent(jScrollPaneUser, javax.swing.GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
+                    .addGroup(panelUserLayout.createSequentialGroup()
+                        .addComponent(lblTotalUser)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(12, 12, 12))
+        );
+        panelUserLayout.setVerticalGroup(
+            panelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelUserLayout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addGroup(panelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelUserLayout.createSequentialGroup()
+                        .addComponent(lblIdUser)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtIdUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblUsernameUser)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtUsernameUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblPasswordUser)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtPasswordUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblRoleUser)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbRoleUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(panelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnTambahUser)
+                            .addComponent(btnUbahUser))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(panelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnHapusUser)
+                            .addComponent(btnResetUser))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(panelUserLayout.createSequentialGroup()
+                        .addGroup(panelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblCariUser)
+                            .addComponent(txtCariUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnRefreshUser))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPaneUser, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblTotalUser)))
+                .addGap(12, 12, 12))
+        );
+
+        tabAdmin.addTab("Data User", panelUser);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -671,43 +813,62 @@ public class DashboardAdmin extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnHapus;
+    private javax.swing.JButton btnHapusUser;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnRefresh;
     private javax.swing.JButton btnRefreshTransaksi;
+    private javax.swing.JButton btnRefreshUser;
     private javax.swing.JButton btnReset;
+    private javax.swing.JButton btnResetUser;
     private javax.swing.JButton btnTambah;
+    private javax.swing.JButton btnTambahUser;
     private javax.swing.JButton btnUbah;
+    private javax.swing.JButton btnUbahUser;
     private javax.swing.JComboBox<String> cbKategori;
+    private javax.swing.JComboBox<String> cbRoleUser;
     private javax.swing.JEditorPane jEditorPane1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPaneUser;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblCari;
     private javax.swing.JLabel lblCariTransaksi;
+    private javax.swing.JLabel lblCariUser;
     private javax.swing.JLabel lblDetailTitle;
     private javax.swing.JLabel lblHargaSewa;
     private javax.swing.JLabel lblIdAlat;
+    private javax.swing.JLabel lblIdUser;
     private javax.swing.JLabel lblKategori;
     private javax.swing.JLabel lblKodeAlat;
     private javax.swing.JLabel lblNamaAlat;
+    private javax.swing.JLabel lblPasswordUser;
+    private javax.swing.JLabel lblRoleUser;
     private javax.swing.JLabel lblStok;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblTotalAlat;
+    private javax.swing.JLabel lblTotalUser;
     private javax.swing.JLabel lblUser;
+    private javax.swing.JLabel lblUsernameUser;
     private javax.swing.JPanel panelAlat;
     private javax.swing.JPanel panelRiwayat;
+    private javax.swing.JPanel panelUser;
     private javax.swing.JTabbedPane tabAdmin;
     private javax.swing.JTable tblAlat;
     private javax.swing.JTable tblDetailTransaksi;
     private javax.swing.JTable tblRiwayatTransaksi;
+    private javax.swing.JTable tblUser;
     private javax.swing.JTextField txtCari;
     private javax.swing.JTextField txtCariTransaksi;
+    private javax.swing.JTextField txtCariUser;
     private javax.swing.JTextField txtHargaSewa;
     private javax.swing.JTextField txtIdAlat;
+    private javax.swing.JTextField txtIdUser;
     private javax.swing.JTextField txtKodeAlat;
     private javax.swing.JTextField txtNamaAlat;
+    private javax.swing.JPasswordField txtPasswordUser;
     private javax.swing.JTextField txtStok;
+    private javax.swing.JTextField txtUsernameUser;
     // End of variables declaration//GEN-END:variables
 }
