@@ -1,15 +1,14 @@
 package Model;
 
-// BigDecimal digunakan untuk menyimpan nilai harga/uang
+// double digunakan untuk menyimpan nilai harga/uang
 // agar sesuai dengan tipe DECIMAL pada database
-import java.math.BigDecimal;
 
 public class Alat {
     private int idAlat;
     private String kodeAlat;
     private String namaAlat;
     private String kategori;
-    private BigDecimal hargaSewaPerHari;
+    private double hargaSewa;
     private int stok;
 
     // Constructor kosong
@@ -20,12 +19,12 @@ public class Alat {
     // Constructor dengan parameter
     // Digunakan untuk membuat objek Alat sekaligus mengisi seluruh atribut
     public Alat(int idAlat, String kodeAlat, String namaAlat, String kategori,
-                BigDecimal hargaSewaPerHari, int stok) {
+                double hargaSewa, int stok) {
         this.idAlat = idAlat;
         this.kodeAlat = kodeAlat;
         this.namaAlat = namaAlat;
         this.kategori = kategori;
-        this.hargaSewaPerHari = hargaSewaPerHari;
+        this.hargaSewa = hargaSewa;
         this.stok = stok;
     }
 
@@ -69,14 +68,14 @@ public class Alat {
         this.kategori = kategori;
     }
 
-    // Getter untuk mengambil nilai hargaSewaPerHari
-    public BigDecimal getHargaSewaPerHari() {
-        return hargaSewaPerHari;
+    // Getter untuk mengambil nilai hargaSewa
+    public double getHargaSewa() {
+        return hargaSewa;
     }
 
-    // Setter untuk mengubah nilai hargaSewaPerHari
-    public void setHargaSewaPerHari(BigDecimal hargaSewaPerHari) {
-        this.hargaSewaPerHari = hargaSewaPerHari;
+    // Setter untuk mengubah nilai hargaSewa
+    public void setHargaSewa(double hargaSewa) {
+        this.hargaSewa = hargaSewa;
     }
 
     // Getter untuk mengambil nilai stok
