@@ -1,7 +1,9 @@
 package Controller;
 
 import Database.Koneksi;
+import Model.DetailPengembalian;
 import Model.Keranjang;
+import Model.Penyewaan;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -198,11 +200,9 @@ public class TransaksiController {
         }
     }
 
-    public boolean simpanPeminjaman(int idPelanggan, String tglSewa, String tglRencanaKembali,
-            double totalBiaya, String metode, double jumlahBayar, double kembalian,
-            List<Keranjang> items) {
+    public boolean simpanPeminjaman(Penyewaan penyewaan, List<Keranjang> items) {
         Connection con = getConnection();
-        if (con == null || items == null || items.isEmpty()) {
+        if (con == null || penyewaan == null || items == null || items.isEmpty()) {
             return false;
         }
 
@@ -217,13 +217,13 @@ public class TransaksiController {
 
             int idPenyewaan = -1;
             try (PreparedStatement pstSewa = con.prepareStatement(sqlSewa, Statement.RETURN_GENERATED_KEYS)) {
-                pstSewa.setInt(1, idPelanggan);
-                pstSewa.setString(2, tglSewa);
-                pstSewa.setString(3, tglRencanaKembali);
-                pstSewa.setDouble(4, totalBiaya);
-                pstSewa.setString(5, metode);
-                pstSewa.setDouble(6, jumlahBayar);
-                pstSewa.setDouble(7, kembalian);
+                pstSewa.setInt(1, penyewaan.getIdPelanggan());
+                pstSewa.setDate(2, penyewaan.getTanggalSewa());
+                pstSewa.setDate(3, penyewaan.getTanggalRencanaKembali());
+                pstSewa.setBigDecimal(4, penyewaan.getTotalBiaya());
+                pstSewa.setString(5, penyewaan.getMetodePembayaran());
+                pstSewa.setBigDecimal(6, penyewaan.getJumlahBayar());
+                pstSewa.setBigDecimal(7, penyewaan.getKembalian());
                 pstSewa.executeUpdate();
 
                 try (ResultSet keys = pstSewa.getGeneratedKeys()) {
@@ -237,6 +237,8 @@ public class TransaksiController {
                 con.rollback();
                 return false;
             }
+
+            penyewaan.setIdPenyewaan(idPenyewaan);
 
             try (PreparedStatement pstDetail = con.prepareStatement(sqlDetail);
                  PreparedStatement pstStok = con.prepareStatement(sqlStok)) {
@@ -254,7 +256,7 @@ public class TransaksiController {
                         return false;
                     }
 
-                    pstDetail.setInt(1, idPenyewaan);
+                    pstDetail.setInt(1, penyewaan.getIdPenyewaan());
                     pstDetail.setInt(2, idAlat);
                     pstDetail.setInt(3, jumlah);
                     pstDetail.setDouble(4, harga);
@@ -280,10 +282,9 @@ public class TransaksiController {
         }
     }
 
-    public boolean prosesPengembalian(int idPenyewaan, String tglKembali, double totalDenda,
-            List<Object[]> details) {
+    public boolean prosesPengembalian(Penyewaan penyewaan, List<DetailPengembalian> details) {
         Connection con = getConnection();
-        if (con == null || details == null || details.isEmpty()) {
+        if (con == null || penyewaan == null || details == null || details.isEmpty()) {
             return false;
         }
 
@@ -296,12 +297,12 @@ public class TransaksiController {
 
             try (PreparedStatement pstKembali = con.prepareStatement(sqlInsertKembali);
                  PreparedStatement pstStok = con.prepareStatement(sqlRestoreStok)) {
-                for (Object[] row : details) {
-                    int idDetailSewa = (int) row[0];
-                    int idAlat = (int) row[1];
-                    int jmlKembali = (int) row[2];
-                    String kondisi = (String) row[3];
-                    String catatan = (String) row[4];
+                for (DetailPengembalian detail : details) {
+                    int idDetailSewa = detail.getIdDetailSewa();
+                    int idAlat = detail.getIdAlat();
+                    int jmlKembali = detail.getJumlahKembali();
+                    String kondisi = detail.getKondisi();
+                    String catatan = detail.getCatatan();
 
                     pstKembali.setInt(1, idDetailSewa);
                     pstKembali.setInt(2, jmlKembali);
@@ -320,9 +321,9 @@ public class TransaksiController {
             }
 
             try (PreparedStatement pstSewa = con.prepareStatement(sqlUpdateSewa)) {
-                pstSewa.setString(1, tglKembali);
-                pstSewa.setDouble(2, totalDenda);
-                pstSewa.setInt(3, idPenyewaan);
+                pstSewa.setDate(1, penyewaan.getTanggalKembali());
+                pstSewa.setBigDecimal(2, penyewaan.getTotalDenda());
+                pstSewa.setInt(3, penyewaan.getIdPenyewaan());
                 pstSewa.executeUpdate();
             }
 

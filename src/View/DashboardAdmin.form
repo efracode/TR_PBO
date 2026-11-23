@@ -674,6 +674,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtCariUser">
+              <Events>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtCariUserKeyReleased"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnRefreshUser">
               <Properties>

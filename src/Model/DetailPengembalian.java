@@ -5,6 +5,7 @@ public class DetailPengembalian {
     // Data detail pengembalian
     private int idDetailPengembalian;
     private int idDetailSewa;
+    private int idAlat;
     private int jumlahKembali;
     private String kondisi;
     private String catatan;
@@ -39,6 +40,15 @@ public class DetailPengembalian {
 
     public void setIdDetailSewa(int idDetailSewa) {
         this.idDetailSewa = idDetailSewa;
+    }
+
+    // Getter & Setter ID alat
+    public int getIdAlat() {
+        return idAlat;
+    }
+
+    public void setIdAlat(int idAlat) {
+        this.idAlat = idAlat;
     }
 
     // Getter & Setter jumlah kembali

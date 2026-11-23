@@ -6,8 +6,12 @@ package View;
 
 import Controller.PelangganController;
 import Controller.TransaksiController;
+import Model.DetailPengembalian;
 import Model.Keranjang;
 import Model.Pelanggan;
+import Model.Penyewaan;
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -16,6 +20,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -1062,7 +1067,18 @@ public class DashboardKasir extends javax.swing.JFrame {
         int idPelanggan = Integer.parseInt(cbPelanggan.getSelectedItem().toString().split(" - ")[0].trim());
         String metode = cbMetode.getSelectedItem().toString();
 
-        if (transaksiController.simpanPeminjaman(idPelanggan, tglSewa, tglRencana, totalBiaya, metode, bayar, kembalian, keranjangList)) {
+        Penyewaan penyewaan = new Penyewaan();
+        penyewaan.setIdPelanggan(idPelanggan);
+        penyewaan.setTanggalSewa(Date.valueOf(tglSewa));
+        penyewaan.setTanggalRencanaKembali(Date.valueOf(tglRencana));
+        penyewaan.setStatus("DISEWA");
+        penyewaan.setTotalBiaya(BigDecimal.valueOf(totalBiaya));
+        penyewaan.setTotalDenda(BigDecimal.ZERO);
+        penyewaan.setMetodePembayaran(metode);
+        penyewaan.setJumlahBayar(BigDecimal.valueOf(bayar));
+        penyewaan.setKembalian(BigDecimal.valueOf(kembalian));
+
+        if (transaksiController.simpanPeminjaman(penyewaan, keranjangList)) {
             JOptionPane.showMessageDialog(this, "Peminjaman berhasil disimpan!");
             resetFormSewa();
             loadMasterData();
@@ -1140,7 +1156,7 @@ public class DashboardKasir extends javax.swing.JFrame {
         }
 
         DefaultTableModel model = (DefaultTableModel) tblDetailKembali.getModel();
-        List<Object[]> details = new ArrayList<>();
+        List<DetailPengembalian> details = new ArrayList<>();
         for (int i = 0; i < model.getRowCount(); i++) {
             int idDetailSewa = Integer.parseInt(model.getValueAt(i, 0).toString());
             int idAlat = Integer.parseInt(model.getValueAt(i, 1).toString());
@@ -1153,10 +1169,22 @@ public class DashboardKasir extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Jumlah kembali tidak valid pada baris " + (i + 1));
                 return;
             }
-            details.add(new Object[]{idDetailSewa, idAlat, jmlKembali, kondisi, catatan});
+            DetailPengembalian detail = new DetailPengembalian();
+            detail.setIdDetailSewa(idDetailSewa);
+            detail.setIdAlat(idAlat);
+            detail.setJumlahKembali(jmlKembali);
+            detail.setKondisi(kondisi);
+            detail.setCatatan(catatan);
+            details.add(detail);
         }
 
-        if (transaksiController.prosesPengembalian(selectedSewaId, tglKembali, denda, details)) {
+        Penyewaan penyewaan = new Penyewaan();
+        penyewaan.setIdPenyewaan(selectedSewaId);
+        penyewaan.setTanggalKembali(Date.valueOf(tglKembali));
+        penyewaan.setTotalDenda(BigDecimal.valueOf(denda));
+        penyewaan.setStatus("SELESAI");
+
+        if (transaksiController.prosesPengembalian(penyewaan, details)) {
             JOptionPane.showMessageDialog(this, "Pengembalian berhasil diproses!");
             loadMasterData();
             loadSewaAktif();
@@ -1281,7 +1309,12 @@ public class DashboardKasir extends javax.swing.JFrame {
     }//GEN-LAST:event_btnResetPelangganActionPerformed
 
     private void txtCariPelangganKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCariPelangganKeyReleased
-        // TODO: hubungkan ke PelangganController
+        String keyword = txtCariPelanggan.getText().trim();
+        if (keyword.isEmpty()) {
+            rowSorter.setRowFilter(null);
+        } else {
+            rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + java.util.regex.Pattern.quote(keyword)));
+        }
     }//GEN-LAST:event_txtCariPelangganKeyReleased
 
     private void btnRefreshPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshPelangganActionPerformed

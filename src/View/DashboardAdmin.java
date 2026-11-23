@@ -590,6 +590,12 @@ public class DashboardAdmin extends javax.swing.JFrame {
 
         lblCariUser.setText("Cari:");
 
+        txtCariUser.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtCariUserKeyReleased(evt);
+            }
+        });
+
         btnRefreshUser.setText("Refresh");
         btnRefreshUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -990,6 +996,15 @@ public class DashboardAdmin extends javax.swing.JFrame {
         // TODO add your handling code here:
         loadUser();
     }//GEN-LAST:event_btnRefreshUserActionPerformed
+
+    private void txtCariUserKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCariUserKeyReleased
+        String keyword = txtCariUser.getText().trim();
+        if (keyword.isEmpty()) {
+            rowSorterUser.setRowFilter(null);
+        } else {
+            rowSorterUser.setRowFilter(RowFilter.regexFilter("(?i)" + java.util.regex.Pattern.quote(keyword)));
+        }
+    }//GEN-LAST:event_txtCariUserKeyReleased
 
     private void tblUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblUserMouseClicked
         // TODO add your handling code here:
