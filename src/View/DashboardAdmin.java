@@ -76,6 +76,7 @@ public class DashboardAdmin extends javax.swing.JFrame {
     
     private void loadUser() {
         userController.readUser();
+        lblTotalUser.setText("Total User: " + tableModelUser.getRowCount());
     }
 
     private void loadRiwayatTransaksi() {

@@ -87,6 +87,7 @@ public class DashboardKasir extends javax.swing.JFrame {
     
     private void loadData() {
         pelangganController.readPelanggan();
+        lblTotalPelanggan.setText("Total Pelanggan: " + tableModel.getRowCount());
     }
 
     private void loadMasterData() {
