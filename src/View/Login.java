@@ -65,7 +65,7 @@ public class Login extends javax.swing.JFrame {
                         if ("admin".equalsIgnoreCase(role)) {
                             new DashboardAdmin(userLogged).setVisible(true);
                             this.dispose();
-                        } else if ("user".equalsIgnoreCase(role) || "kasir".equalsIgnoreCase(role)) {
+                        } else if ("kasir".equalsIgnoreCase(role)) {
                             new DashboardKasir(userLogged).setVisible(true);
                             this.dispose();
                         } else {

@@ -6,6 +6,8 @@ import Model.User;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.table.DefaultTableModel;
 
 public class UserController {
@@ -14,6 +16,7 @@ public class UserController {
     public String sql;
 
     DefaultTableModel dtm = new DefaultTableModel();
+    private final Map<String, String> passwordById = new HashMap<>();
     
     public UserController() {
         Koneksi db = new Koneksi();
@@ -24,10 +27,13 @@ public class UserController {
     public DefaultTableModel createTable() {
         this.dtm.addColumn("ID");
         this.dtm.addColumn("Username");
-        this.dtm.addColumn("Password");
-        this.dtm.addColumn("role");
+        this.dtm.addColumn("Role");
         
         return this.dtm;
+    }
+
+    public String getPasswordById(String idUser) {
+        return passwordById.getOrDefault(idUser, "");
     }
     
     public void readUser() {
@@ -35,6 +41,7 @@ public class UserController {
             // Persiapkan tabel virtual
             this.dtm.getDataVector().removeAllElements();
             this.dtm.fireTableDataChanged();
+            this.passwordById.clear();
 
             // Query
             this.sql = "SELECT * FROM user";
@@ -44,13 +51,16 @@ public class UserController {
 
             // Masukkan hasil querynya ke tabel virtual
             while (res.next()) {
-                Object[] obj = new Object[4];
+                String idUser = res.getString("id_user");
+                String password = res.getString("password");
+                this.passwordById.put(idUser, password == null ? "" : password);
+
+                Object[] obj = new Object[3];
 
                 // Nama harus sama dengan yang di database
-                obj[0] = res.getString("id_user");
+                obj[0] = idUser;
                 obj[1] = res.getString("username");
-                obj[2] = res.getString("password");
-                obj[3] = res.getString("role");
+                obj[2] = res.getString("role");
                 this.dtm.addRow(obj);
             }
         } catch (SQLException e) {
@@ -81,7 +91,7 @@ public class UserController {
                 this.sql = "UPDATE user "
                         + "SET "
                         + "username = '" + user.getUsername().replace("'", "''") + "', "
-                        + "username = '" + user.getPassword().replace("'", "''") + "', "
+                        + "password = '" + user.getPassword().replace("'", "''") + "', "
                         + "role = '" + user.getRole().replace("'", "''")
                         + "' WHERE id_user = " + user.getIdUser();
                 this.stm.executeUpdate(sql);

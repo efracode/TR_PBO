@@ -11,6 +11,12 @@
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/drago/OneDrive/Documents/NetBeansProjects/TR_AST_PBO/src/View/DashboardKasir.java</file>
+            <file>file:/C:/Users/drago/OneDrive/Documents/NetBeansProjects/TR_AST_PBO/src/Controller/TransaksiController.java</file>
+            <file>file:/C:/Users/drago/OneDrive/Documents/NetBeansProjects/TR_AST_PBO/src/View/DashboardAdmin.java</file>
+            <file>file:/C:/Users/drago/OneDrive/Documents/NetBeansProjects/TR_AST_PBO/src/View/Login.java</file>
+            <file>file:/C:/Users/drago/OneDrive/Documents/NetBeansProjects/TR_AST_PBO/src/Controller/UserController.java</file>
+        </group>
     </open-files>
 </project-private>

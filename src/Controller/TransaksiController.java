@@ -172,7 +172,7 @@ public class TransaksiController {
         if (con == null) {
             return;
         }
-        String sql = "SELECT id_pelanggan, nama, no_hp FROM pelanggan ORDER BY nama";
+        String sql = "SELECT id_pelanggan, nama, no_hp FROM pelanggan ORDER BY id_pelanggan";
         try (Statement stm = con.createStatement(); ResultSet rs = stm.executeQuery(sql)) {
             while (rs.next()) {
                 cb.addItem(rs.getInt("id_pelanggan") + " - " + rs.getString("nama") + " (" + rs.getString("no_hp") + ")");
@@ -188,12 +188,34 @@ public class TransaksiController {
         if (con == null) {
             return;
         }
-        String sql = "SELECT id_alat, kode_alat, nama_alat, harga_sewa_per_hari, stok FROM alat WHERE stok > 0 ORDER BY nama_alat";
+        String sql = "SELECT id_alat, kode_alat, nama_alat, harga_sewa_per_hari, stok FROM alat WHERE stok > 0 ORDER BY id_alat";
         try (Statement stm = con.createStatement(); ResultSet rs = stm.executeQuery(sql)) {
             while (rs.next()) {
                 cb.addItem(rs.getInt("id_alat") + " | " + rs.getString("kode_alat") + " - "
                         + rs.getString("nama_alat") + " | Rp" + rs.getDouble("harga_sewa_per_hari")
                         + " | Stok:" + rs.getInt("stok"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Gagal loadAlatTersedia: " + e.getMessage());
+        }
+    }
+
+    public void loadAlatTersedia(DefaultTableModel dtm) {
+        dtm.setRowCount(0);
+        Connection con = getConnection();
+        if (con == null) {
+            return;
+        }
+        String sql = "SELECT id_alat, kode_alat, nama_alat, harga_sewa_per_hari, stok FROM alat WHERE stok > 0 ORDER BY id_alat";
+        try (Statement stm = con.createStatement(); ResultSet rs = stm.executeQuery(sql)) {
+            while (rs.next()) {
+                dtm.addRow(new Object[]{
+                    rs.getInt("id_alat"),
+                    rs.getString("kode_alat"),
+                    rs.getString("nama_alat"),
+                    rs.getDouble("harga_sewa_per_hari"),
+                    rs.getInt("stok")
+                });
             }
         } catch (SQLException e) {
             System.out.println("Gagal loadAlatTersedia: " + e.getMessage());

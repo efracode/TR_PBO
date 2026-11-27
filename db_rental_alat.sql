@@ -139,7 +139,7 @@ CREATE TABLE `user` (
   `id_user` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('admin','user') NOT NULL
+  `role` enum('admin','kasir') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -148,7 +148,7 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`id_user`, `username`, `password`, `role`) VALUES
 (1, 'admin', 'admin123', 'admin'),
-(2, 'user', 'user123', 'user');
+(2, 'willy', 'willy125', 'kasir');
 
 --
 -- Indexes for dumped tables

@@ -101,33 +101,34 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="lblPelanggan" min="-2" max="-2" attributes="0"/>
-                          <Component id="cbPelanggan" alignment="0" pref="240" max="32767" attributes="0"/>
-                          <Component id="lblTglSewa" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtTglSewa" alignment="0" max="32767" attributes="0"/>
-                          <Component id="lblTglRencana" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtTglRencanaKembali" alignment="0" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
+                          <Component id="jScrollPaneKeranjang" pref="864" max="32767" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="lblPelanggan" min="-2" max="-2" attributes="0"/>
+                                  <Component id="cbPelanggan" alignment="0" pref="240" max="32767" attributes="0"/>
+                                  <Component id="lblTglSewa" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtTglSewa" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="lblTglRencana" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtTglRencanaKembali" alignment="0" max="32767" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="lblPilihAlat" min="-2" max="-2" attributes="0"/>
-                                  <Component id="cbAlat" pref="290" max="32767" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Component id="lblPilihAlat" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Component id="jScrollPaneAlat" pref="478" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="lblJumlah" min="-2" max="-2" attributes="0"/>
-                                  <Component id="txtJumlah" min="-2" pref="70" max="-2" attributes="0"/>
+                                  <Component id="txtJumlah" max="32767" attributes="0"/>
+                                  <Component id="btnTambahItem" pref="110" max="32767" attributes="0"/>
+                                  <Component id="btnHapusItem" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="btnTambahItem" min="-2" pref="110" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="btnHapusItem" min="-2" pref="100" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jScrollPaneKeranjang" pref="600" max="32767" attributes="0"/>
-                          <Group type="102" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="lblTotalBiaya" min="-2" max="-2" attributes="0"/>
                                   <Component id="txtTotalBiaya" min="-2" pref="130" max="-2" attributes="0"/>
@@ -147,10 +148,7 @@
                                   <Component id="lblKembalian" min="-2" max="-2" attributes="0"/>
                                   <Component id="txtKembalian" min="-2" pref="130" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="1" attributes="0">
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                               <Component id="btnResetSewa" min="-2" pref="95" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="btnSimpanSewa" min="-2" pref="150" max="-2" attributes="0"/>
@@ -164,7 +162,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" attributes="0">
                               <Component id="lblPelanggan" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -177,7 +175,6 @@
                               <Component id="lblTglRencana" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="txtTglRencanaKembali" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="3" attributes="0">
@@ -185,34 +182,36 @@
                                   <Component id="lblJumlah" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="cbAlat" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="txtJumlah" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="btnTambahItem" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="btnHapusItem" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jScrollPaneKeranjang" pref="265" max="32767" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="lblTotalBiaya" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="lblMetode" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="lblBayar" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="lblKembalian" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="txtTotalBiaya" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="cbMetode" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="txtBayar" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="txtKembalian" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="btnSimpanSewa" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="btnResetSewa" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="txtJumlah" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="btnTambahItem" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="btnHapusItem" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Component id="jScrollPaneAlat" pref="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="jScrollPaneKeranjang" pref="200" max="32767" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="lblTotalBiaya" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblMetode" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblBayar" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblKembalian" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="txtTotalBiaya" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="cbMetode" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtBayar" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtKembalian" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnResetSewa" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnSimpanSewa" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                   </Group>
@@ -255,11 +254,28 @@
                 <Property name="text" type="java.lang.String" value="Pilih Alat"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JComboBox" name="cbAlat">
+            <Container class="javax.swing.JScrollPane" name="jScrollPaneAlat">
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
               </AuxValues>
-            </Component>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+              <SubComponents>
+                <Component class="javax.swing.JTable" name="tblAlat">
+                  <Properties>
+                    <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                      <Table columnCount="5" rowCount="0">
+                        <Column editable="false" title="ID Alat" type="java.lang.Object"/>
+                        <Column editable="false" title="Kode" type="java.lang.Object"/>
+                        <Column editable="false" title="Nama Alat" type="java.lang.Object"/>
+                        <Column editable="false" title="Harga/Hari" type="java.lang.Object"/>
+                        <Column editable="false" title="Stok" type="java.lang.Object"/>
+                      </Table>
+                    </Property>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
             <Component class="javax.swing.JLabel" name="lblJumlah">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Jumlah"/>

@@ -29,6 +29,7 @@ public class DashboardAdmin extends javax.swing.JFrame {
     private final DefaultTableModel tableModelUser;
     private final TableRowSorter<DefaultTableModel> rowSorter;
     private final TableRowSorter<DefaultTableModel> rowSorterUser;
+    private final char defaultPasswordEchoChar;
 
     /**
      * Creates new form DashboardAdmin
@@ -39,6 +40,7 @@ public class DashboardAdmin extends javax.swing.JFrame {
 
     public DashboardAdmin(String username) {
         initComponents();
+        defaultPasswordEchoChar = txtPasswordUser.getEchoChar();
         String namaUser = (username == null || username.trim().isEmpty()) ? "Admin" : username;
         lblUser.setText("Admin: " + namaUser);
 
@@ -137,7 +139,7 @@ public class DashboardAdmin extends javax.swing.JFrame {
     private User buildUserFromForm() {
         String idText = txtIdUser.getText().trim();
         String username = txtUsernameUser.getText().trim();
-        String password = txtPasswordUser.getText().trim();
+        String password = new String(txtPasswordUser.getPassword()).trim();
         Object roleObj = cbRoleUser.getEditor().getItem();
         String role = roleObj == null ? "" : roleObj.toString().trim();
         if (role.isEmpty() && cbKategori.getSelectedItem() != null) {
@@ -183,6 +185,8 @@ public class DashboardAdmin extends javax.swing.JFrame {
         txtIdUser.setText("");
         txtUsernameUser.setText("");
         txtPasswordUser.setText("");
+        chkShowPasswordUser.setSelected(false);
+        txtPasswordUser.setEchoChar(defaultPasswordEchoChar);
         cbRoleUser.setSelectedIndex(0);
         tblUser.clearSelection();
         txtIdUser.requestFocus();
@@ -243,6 +247,7 @@ public class DashboardAdmin extends javax.swing.JFrame {
         txtUsernameUser = new javax.swing.JTextField();
         lblPasswordUser = new javax.swing.JLabel();
         txtPasswordUser = new javax.swing.JPasswordField();
+        chkShowPasswordUser = new javax.swing.JCheckBox();
         lblRoleUser = new javax.swing.JLabel();
         cbRoleUser = new javax.swing.JComboBox<>();
         btnTambahUser = new javax.swing.JButton();
@@ -557,9 +562,16 @@ public class DashboardAdmin extends javax.swing.JFrame {
 
         lblPasswordUser.setText("Password");
 
+        chkShowPasswordUser.setText("Tampilkan Password");
+        chkShowPasswordUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkShowPasswordUserActionPerformed(evt);
+            }
+        });
+
         lblRoleUser.setText("Role");
 
-        cbRoleUser.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "admin", "user" }));
+        cbRoleUser.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "admin", "kasir" }));
 
         btnTambahUser.setText("Tambah");
         btnTambahUser.addActionListener(new java.awt.event.ActionListener() {
@@ -609,11 +621,11 @@ public class DashboardAdmin extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Username", "Password", "Role"
+                "ID", "Username", "Role"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -642,6 +654,7 @@ public class DashboardAdmin extends javax.swing.JFrame {
                     .addComponent(txtUsernameUser)
                     .addComponent(lblPasswordUser)
                     .addComponent(txtPasswordUser)
+                    .addComponent(chkShowPasswordUser)
                     .addComponent(lblRoleUser)
                     .addComponent(cbRoleUser, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(panelUserLayout.createSequentialGroup()
@@ -683,6 +696,8 @@ public class DashboardAdmin extends javax.swing.JFrame {
                         .addComponent(lblPasswordUser)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtPasswordUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkShowPasswordUser)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lblRoleUser)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -985,13 +1000,16 @@ public class DashboardAdmin extends javax.swing.JFrame {
 
     private void btnResetUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetUserActionPerformed
         // TODO add your handling code here:
-        txtIdUser.setText("");
-        txtUsernameUser.setText("");
-        txtPasswordUser.setText("");
-        cbRoleUser.setSelectedIndex(0);
-        tblUser.clearSelection();
-        txtIdUser.requestFocus();
+        resetFormUser();
     }//GEN-LAST:event_btnResetUserActionPerformed
+
+    private void chkShowPasswordUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkShowPasswordUserActionPerformed
+        if (chkShowPasswordUser.isSelected()) {
+            txtPasswordUser.setEchoChar((char) 0);
+        } else {
+            txtPasswordUser.setEchoChar(defaultPasswordEchoChar);
+        }
+    }//GEN-LAST:event_chkShowPasswordUserActionPerformed
 
     private void btnRefreshUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshUserActionPerformed
         // TODO add your handling code here:
@@ -1011,10 +1029,11 @@ public class DashboardAdmin extends javax.swing.JFrame {
         // TODO add your handling code here:
         int row = tblUser.getSelectedRow();
         if (row >= 0) {
-            txtIdUser.setText(tblUser.getValueAt(row, 0).toString());
+            String idUser = tblUser.getValueAt(row, 0).toString();
+            txtIdUser.setText(idUser);
             txtUsernameUser.setText(tblUser.getValueAt(row, 1).toString());
-            txtPasswordUser.setText(tblUser.getValueAt(row, 2).toString());
-            cbRoleUser.setSelectedItem(tblUser.getValueAt(row, 3).toString());
+            txtPasswordUser.setText(userController.getPasswordById(idUser));
+            cbRoleUser.setSelectedItem(tblUser.getValueAt(row, 2).toString());
         }
     }//GEN-LAST:event_tblUserMouseClicked
 
@@ -1058,6 +1077,7 @@ public class DashboardAdmin extends javax.swing.JFrame {
     private javax.swing.JButton btnUbahUser;
     private javax.swing.JComboBox<String> cbKategori;
     private javax.swing.JComboBox<String> cbRoleUser;
+    private javax.swing.JCheckBox chkShowPasswordUser;
     private javax.swing.JEditorPane jEditorPane1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
